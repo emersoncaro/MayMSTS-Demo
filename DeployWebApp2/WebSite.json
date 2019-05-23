@@ -3,11 +3,11 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "webSiteName": {
-      "defaultValue": "MayMSTS-Test",
+      "defaultValue": "MayMSTS-Prod2",
       "type": "string"
     },
     "hostingPlanName": {
-      "defaultValue": "MayMSTS-Test-ASP",
+      "defaultValue": "MayMSTS-Prod2-ASP",
       "type": "string"
     }
   },

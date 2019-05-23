@@ -2,77 +2,180 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "hostingPlanName": {
-      "type": "string",
-      "minLength": 1
-    },
     "webSiteName": {
-      "type":  "string"
+      "defaultValue": "MayMSTS-Test",
+      "type": "string"
     },
-    "skuName": {
-      "type": "string",
-      "defaultValue": "F1",
-      "allowedValues": [
-        "F1",
-        "D1",
-        "B1",
-        "B2",
-        "B3",
-        "S1",
-        "S2",
-        "S3",
-        "P1",
-        "P2",
-        "P3",
-        "P4"
-      ],
-      "metadata": {
-        "description": "Describes plan's pricing tier and capacity. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
-      }
-    },
-    "skuCapacity": {
-      "type": "int",
-      "defaultValue": 1,
-      "minValue": 1,
-      "metadata": {
-        "description": "Describes plan's instance count"
-      }
+    "hostingPlanName": {
+      "defaultValue": "MayMSTS-Test-ASP",
+      "type": "string"
     }
   },
-  "variables": {
-  },
+  "variables": {},
   "resources": [
     {
-      "apiVersion": "2015-08-01",
-      "name": "[parameters('hostingPlanName')]",
       "type": "Microsoft.Web/serverfarms",
-      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-09-01",
+      "name": "[parameters('serverfarms_MayMSTS_Test_ASP_name')]",
+      "location": "Southeast Asia",
       "tags": {
-        "displayName": "HostingPlan"
+        "displayName": "HostingPlan",
+        "costCenter": "My Cost Center"
       },
       "sku": {
-        "name": "[parameters('skuName')]",
-        "capacity": "[parameters('skuCapacity')]"
+        "name": "F1",
+        "tier": "Free",
+        "size": "F1",
+        "family": "F",
+        "capacity": 0
       },
+      "kind": "app",
       "properties": {
-        "name": "[parameters('hostingPlanName')]"
+        "name": "[parameters('serverfarms_MayMSTS_Test_ASP_name')]",
+        "perSiteScaling": false,
+        "reserved": false,
+        "targetWorkerCount": 0,
+        "targetWorkerSizeId": 0
       }
     },
     {
-      "apiVersion": "2015-08-01",
-      "name": "[parameters('webSiteName')]",
       "type": "Microsoft.Web/sites",
-      "location": "[resourceGroup().location]",
-      "tags": {
-        "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "Resource",
-        "displayName": "Website"
-      },
+      "apiVersion": "2016-08-01",
+      "name": "[parameters('sites_MayMSTS_Test_name')]",
+      "location": "Southeast Asia",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+        "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_MayMSTS_Test_ASP_name'))]"
+      ],
+      "tags": {
+        "displayName": "Website",
+        "hidden-related:/subscriptions/b416ef78-aade-4e6c-83fa-a5edd8138303/resourceGroups/MayMSTS-Test-RG/providers/Microsoft.Web/serverfarms/MayMSTS-Test-ASP": "Resource",
+        "costCenter": "My Cost Center"
+      },
+      "kind": "app",
+      "properties": {
+        "enabled": true,
+        "hostNameSslStates": [
+          {
+            "name": "maymsts-test.azurewebsites.net",
+            "sslState": "Disabled",
+            "hostType": "Standard"
+          },
+          {
+            "name": "maymsts-test.scm.azurewebsites.net",
+            "sslState": "Disabled",
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_MayMSTS_Test_ASP_name'))]",
+        "reserved": false,
+        "scmSiteAlsoStopped": false,
+        "clientAffinityEnabled": true,
+        "clientCertEnabled": false,
+        "hostNamesDisabled": false,
+        "containerSize": 0,
+        "dailyMemoryTimeQuota": 0,
+        "httpsOnly": false
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(parameters('sites_MayMSTS_Test_name'), '/web')]",
+      "location": "Southeast Asia",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_MayMSTS_Test_name'))]"
+      ],
+      "tags": {
+        "displayName": "Website",
+        "hidden-related:/subscriptions/b416ef78-aade-4e6c-83fa-a5edd8138303/resourceGroups/MayMSTS-Test-RG/providers/Microsoft.Web/serverfarms/MayMSTS-Test-ASP": "Resource",
+        "costCenter": "My Cost Center"
+      },
+      "properties": {
+        "numberOfWorkers": 1,
+        "defaultDocuments": [
+          "emerson.php"
+        ],
+        "netFrameworkVersion": "v4.0",
+        "phpVersion": "5.6",
+        "pythonVersion": "",
+        "nodeVersion": "",
+        "linuxFxVersion": "",
+        "requestTracingEnabled": false,
+        "remoteDebuggingEnabled": false,
+        "remoteDebuggingVersion": "VS2017",
+        "httpLoggingEnabled": false,
+        "logsDirectorySizeLimit": 35,
+        "detailedErrorLoggingEnabled": false,
+        "publishingUsername": "$MayMSTS-Test",
+        "scmType": "None",
+        "use32BitWorkerProcess": true,
+        "webSocketsEnabled": false,
+        "alwaysOn": false,
+        "appCommandLine": "",
+        "managedPipelineMode": "Integrated",
+        "virtualApplications": [
+          {
+            "virtualPath": "/",
+            "physicalPath": "site\\wwwroot",
+            "preloadEnabled": false,
+            "virtualDirectories": null
+          }
+        ],
+        "winAuthAdminState": 0,
+        "winAuthTenantState": 0,
+        "customAppPoolIdentityAdminState": false,
+        "customAppPoolIdentityTenantState": false,
+        "loadBalancing": "LeastRequests",
+        "routingRules": [],
+        "experiments": {
+          "rampUpRules": []
+        },
+        "autoHealEnabled": false,
+        "vnetName": "",
+        "siteAuthEnabled": false,
+        "siteAuthSettings": {
+          "enabled": null,
+          "unauthenticatedClientAction": null,
+          "tokenStoreEnabled": null,
+          "allowedExternalRedirectUrls": null,
+          "defaultProvider": null,
+          "clientId": null,
+          "clientSecret": null,
+          "clientSecretCertificateThumbprint": null,
+          "issuer": null,
+          "allowedAudiences": null,
+          "additionalLoginParams": null,
+          "isAadAutoProvisioned": false,
+          "googleClientId": null,
+          "googleClientSecret": null,
+          "googleOAuthScopes": null,
+          "facebookAppId": null,
+          "facebookAppSecret": null,
+          "facebookOAuthScopes": null,
+          "twitterConsumerKey": null,
+          "twitterConsumerSecret": null,
+          "microsoftAccountClientId": null,
+          "microsoftAccountClientSecret": null,
+          "microsoftAccountOAuthScopes": null
+        },
+        "localMySqlEnabled": false,
+        "http20Enabled": false,
+        "minTlsVersion": "1.2",
+        "ftpsState": "AllAllowed",
+        "reservedInstanceCount": 0
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/hostNameBindings",
+      "apiVersion": "2016-08-01",
+      "name": "[concat(parameters('sites_MayMSTS_Test_name'), '/', parameters('sites_MayMSTS_Test_name'), '.azurewebsites.net')]",
+      "location": "Southeast Asia",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('sites_MayMSTS_Test_name'))]"
       ],
       "properties": {
-        "name": "[parameters('webSiteName')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+        "siteName": "MayMSTS-Test",
+        "hostNameType": "Verified"
       }
     }
   ]

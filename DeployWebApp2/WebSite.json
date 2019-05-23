@@ -41,7 +41,7 @@
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2016-08-01",
-      "name": "[parameters('hostingPlanName')]",
+      "name": "[parameters('webSiteName')]",
       "location": "Southeast Asia",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"

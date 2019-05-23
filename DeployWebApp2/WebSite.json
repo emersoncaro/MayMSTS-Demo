@@ -16,7 +16,7 @@
     {
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2016-09-01",
-      "name": "[parameters('serverfarms_MayMSTS_Test_ASP_name')]",
+      "name": "[parameters('hostingPlanName')]",
       "location": "Southeast Asia",
       "tags": {
         "displayName": "HostingPlan",
@@ -31,7 +31,7 @@
       },
       "kind": "app",
       "properties": {
-        "name": "[parameters('serverfarms_MayMSTS_Test_ASP_name')]",
+        "name": "[parameters('hostingPlanName')]",
         "perSiteScaling": false,
         "reserved": false,
         "targetWorkerCount": 0,
@@ -41,10 +41,10 @@
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2016-08-01",
-      "name": "[parameters('sites_MayMSTS_Test_name')]",
+      "name": "[parameters('hostingPlanName')]",
       "location": "Southeast Asia",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_MayMSTS_Test_ASP_name'))]"
+        "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
       ],
       "tags": {
         "displayName": "Website",
@@ -66,7 +66,7 @@
             "hostType": "Repository"
           }
         ],
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_MayMSTS_Test_ASP_name'))]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
         "reserved": false,
         "scmSiteAlsoStopped": false,
         "clientAffinityEnabled": true,
@@ -80,10 +80,10 @@
     {
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2016-08-01",
-      "name": "[concat(parameters('sites_MayMSTS_Test_name'), '/web')]",
+      "name": "[concat(parameters('webSiteName'), '/web')]",
       "location": "Southeast Asia",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', parameters('sites_MayMSTS_Test_name'))]"
+        "[resourceId('Microsoft.Web/sites', parameters('webSiteName'))]"
       ],
       "tags": {
         "displayName": "Website",
@@ -168,10 +168,10 @@
     {
       "type": "Microsoft.Web/sites/hostNameBindings",
       "apiVersion": "2016-08-01",
-      "name": "[concat(parameters('sites_MayMSTS_Test_name'), '/', parameters('sites_MayMSTS_Test_name'), '.azurewebsites.net')]",
+      "name": "[concat(parameters('webSiteName'), '/', parameters('webSiteName'), '.azurewebsites.net')]",
       "location": "Southeast Asia",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', parameters('sites_MayMSTS_Test_name'))]"
+        "[resourceId('Microsoft.Web/sites', parameters('webSiteName'))]"
       ],
       "properties": {
         "siteName": "MayMSTS-Test",
